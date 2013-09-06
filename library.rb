@@ -23,12 +23,11 @@ class Library
 end
 
 class Book
-  attr_reader :author, :title, :description, :due_date
+  attr_accessor :author, :title, :description, :due_date
   def initialize(author, title, description)
     @author = author
     @title = title
     @description = description
-    @due_date = nil
   end
 end
 
@@ -37,17 +36,30 @@ class User
 
   # See the books currently checked out.
   def to_s
-    puts "#{@@checked_out_books}"
+    puts "CHECKED OUT:"
+    @@checked_out_books.each do | name, book |
+      puts "\"#{name}\" by #{book.author}"
+    end
+  end
+
+  def overdue_books?
+    if @@checked_out_books.length > 0
+      @@checked_out_books.each do | name, book |
+        return book.due_date < Time.now
+      end
+    end
   end
 
   # Check out a book.
   #
   # book - An instance of the book class from the library.
   def check_out(book)
-    if @@checked_out_books.length <= 2
+    if @@checked_out_books.length <= 2 && !overdue_books?
       @@checked_out_books[book.title] = book
-      @@checked_out_books[book.due_date] = Time.now + 604800
-      puts "The book is due #{@@checked_out_books[book.due_date].asctime}"
+      @@checked_out_books[book.title].due_date = Time.now + 604800
+      puts "Checked out #{book.title}. It's due #{@@checked_out_books[book.title].due_date.asctime}"
+    elsif overdue_books?
+      puts "You have overdue books. Please return them before checking out anything else."
     else
       puts "Only 2 books are allowed to be checked out at a time."
     end
@@ -76,4 +88,9 @@ lib.add_book(book_3)
 # Check out book
 lib.check_out(book_1, user_1)
 lib.check_out(book_2, user_1)
-lib.check_out(book_3, user_1)
+
+puts
+user_1.to_s
+puts
+puts user_1.overdue_books?
+puts
