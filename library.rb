@@ -23,21 +23,30 @@ class Library
 end
 
 class Book
-  attr_reader :author, :title, :description
+  attr_reader :author, :title, :description, :due_date
   def initialize(author, title, description)
     @author = author
     @title = title
     @description = description
+    @due_date = nil
   end
 end
 
 class User
   @@checked_out_books = {}
+
+  # See the books currently checked out.
   def to_s
     puts "#{@@checked_out_books}"
   end
+
+  # Check out a book.
+  #
+  # book - An instance of the book class from the library.
   def check_out(book)
     @@checked_out_books[book.title] = book
+    @@checked_out_books[book.due_date] = Time.now + 604800
+    puts "The book is due #{@@checked_out_books[book.due_date].asctime}"
   end
 end
 
@@ -64,4 +73,4 @@ lib.add_book(book_3)
 lib.check_out(book_1, user_1)
 
 # Test
-user_1.to_s
+# user_1.to_s
