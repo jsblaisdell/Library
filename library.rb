@@ -44,9 +44,13 @@ class User
   #
   # book - An instance of the book class from the library.
   def check_out(book)
-    @@checked_out_books[book.title] = book
-    @@checked_out_books[book.due_date] = Time.now + 604800
-    puts "The book is due #{@@checked_out_books[book.due_date].asctime}"
+    if @@checked_out_books.length <= 2
+      @@checked_out_books[book.title] = book
+      @@checked_out_books[book.due_date] = Time.now + 604800
+      puts "The book is due #{@@checked_out_books[book.due_date].asctime}"
+    else
+      puts "Only 2 books are allowed to be checked out at a time."
+    end
   end
 end
 
@@ -71,6 +75,5 @@ lib.add_book(book_3)
 
 # Check out book
 lib.check_out(book_1, user_1)
-
-# Test
-# user_1.to_s
+lib.check_out(book_2, user_1)
+lib.check_out(book_3, user_1)
